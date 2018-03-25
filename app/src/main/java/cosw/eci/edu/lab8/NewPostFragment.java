@@ -1,5 +1,13 @@
 package cosw.eci.edu.lab8;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -29,8 +37,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link NewPostFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link NewPostFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class NewPostFragment extends Fragment{
     public static final String POST_MESSAGE= "bundlePost";
     public static final String POST_MESSAGE_OBJECT= "value";
     public static final int SELECT_IMAGE= 1;
@@ -42,14 +58,37 @@ public class MainActivity extends AppCompatActivity {
     private CheckedTextView imageCheck;
     private CheckedTextView messageCheck;
 
+
+
+    private OnFragmentInteractionListener mListener;
+
+    public NewPostFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment NewPostFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static NewPostFragment newInstance(String param1, String param2) {
+        NewPostFragment fragment = new NewPostFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        image = (ImageView) findViewById(R.id.imageView);
-        text = (EditText) findViewById(R.id.message);
-        imageCheck = (CheckedTextView) findViewById(R.id.checkImage);
-        messageCheck = (CheckedTextView) findViewById(R.id.checkMessage);
+        image = (ImageView) getView().findViewById(R.id.imageView);
+        text = (EditText) getView().findViewById(R.id.message);
+        imageCheck = (CheckedTextView) getView().findViewById(R.id.checkImage);
+        messageCheck = (CheckedTextView) getView().findViewById(R.id.checkMessage);
         image.setVisibility(View.INVISIBLE);
 
         messageCheck.setCheckMarkDrawable(android.R.drawable.checkbox_off_background);
@@ -71,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     public void onClickAddPhoto(View v){
 
         final DialogInterface.OnClickListener selectedListener = new DialogInterface.OnClickListener() {
@@ -81,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (which) {
                     case 0:
                         //take picture
-                        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+                        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
                             dispatchTakePictureIntent();
                         }
                         break;
@@ -98,13 +136,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        createSingleChoiceAlertDialog(MainActivity.this,"Select option", dialogItems, selectedListener,null).show();
+        createSingleChoiceAlertDialog(getActivity() ,"Select option", dialogItems, selectedListener,null).show();
     }
 
     public void onClickSave(View v){
         if(text.getText().toString().length()>=20 && image.getVisibility()==View.VISIBLE){
             //Create a new intent for the PostActivity created before.
-            Intent intent = new Intent(this, PostActivity.class);
+            Intent intent = new Intent(getActivity(), PostActivity.class);
             //Create a Bundle object and add the Post object created to this bundle, then add the bundle to the intent as extras.
             Bundle bundle = new Bundle();
             bundle.putSerializable(POST_MESSAGE_OBJECT,new Post(text.getText().toString(),imageUri.toString()));
@@ -120,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Create the File where the photo should go
             File photoFile = null;
             try {
@@ -142,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -152,11 +190,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode){
             case SELECT_IMAGE:
-                if(resultCode==RESULT_OK){
+                if(resultCode==getActivity().RESULT_OK){
                     imageUri = data.getData();
                     image.setImageURI(null);
                     image.setImageURI(imageUri);
@@ -171,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case REQUEST_IMAGE_CAPTURE:
-                if(resultCode==RESULT_OK){
+                if(resultCode==getActivity().RESULT_OK){
                     /*Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     image.setImageBitmap(imageBitmap);*/
@@ -198,5 +236,54 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle( title );
         return builder.create();
     }
+
+
+    //AUTOGENERATED CODE
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_new_post, container, false);
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package cosw.eci.edu.lab8;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ public class PostActivity extends AppCompatActivity {
         System.out.println("----------------------------IMPRIMIENDO DESDE NEW ACTIVITY----------------------");
         System.out.println(p.getImageUri());
         System.out.println(p.getMessage());
+
+        Fragment NewPostFragment = new Fragment();
     }
 
 }
