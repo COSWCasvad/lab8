@@ -3,6 +3,7 @@ package cosw.eci.edu.lab8;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,6 +137,8 @@ public class NewPostFragment extends Fragment{
                 switch (which) {
                     case 0:
                         //take picture
+                        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                        StrictMode.setVmPolicy(builder.build());
                         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
                             dispatchTakePictureIntent();
                         }
